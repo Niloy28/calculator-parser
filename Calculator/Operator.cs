@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CalculatorParser
+﻿namespace CalculatorParser
 {
-    public class Operator : IComparable<Operator>
+    public class Operator
     {
-        public String Symbol { get; private set; }
-        public Associativity Associativity { get; private set; }
-        public int Precedence { get; private set; }
-
-        public Operator(string symbol, Associativity associativity, int precedence)
+        public static readonly Dictionary<string, Operator> Operators = new Dictionary<string, Operator>()
         {
-            Associativity = associativity;
+            { "+", new Operator("+", 0, Associativity.LEFT) },
+            { "-", new Operator("-", 0, Associativity.RIGHT) },
+            { "*", new Operator("*", 5, Associativity.LEFT) },
+            { "/", new Operator("/", 5, Associativity.LEFT) },
+        };
+
+        public string Symbol { get; private set; }
+        public int Precedence { get; private set; }
+        public Associativity Associativity { get; private set; }
+
+        private Operator(string symbol, int precedence, Associativity associativity)
+        {
             Symbol = symbol;
             Precedence = precedence;
-        }
-
-        public int CompareTo(Operator? @operator)
-        {
-            if (@operator == null) throw new ArgumentNullException(nameof(@operator));
-
-            return this.Precedence.CompareTo(@operator.Precedence);
+            Associativity = associativity;
         }
     }
 }

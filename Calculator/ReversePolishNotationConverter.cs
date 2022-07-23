@@ -1,75 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CalculatorParser
+﻿namespace CalculatorParser
 {
-    internal class ReversePolishNotationConverter
+    public class ReversePolishNotationConverter
     {
         public Queue<string> Convert(string expression)
         {
             Queue<string> rpn = new Queue<string>();
-            Stack<string> operators = new Stack<string>();
+            Stack<string> mathSymbols = new Stack<string>();
 
             string operand = "";
-            foreach (char token in expression)
+            foreach (char c in expression)
             {
-                if (char.IsDigit(token))
+                string token = c.ToString();
+                if (char.IsDigit(c))
                 {
                     // if token is a digit, add to the back of operand
                     operand += token;
                 }
-                else if (IsOperator(token.ToString()))
+                else if (Operator.Operators.ContainsKey(token))
                 {
                     // if an operator is found, the operand is finished
                     rpn.Enqueue(operand);
+                    operand = "";
 
-                    if (operators.Count != 0 && IsOperator(operators.Peek()))
+                    if (mathSymbols.Count != 0 && Operator.Operators.ContainsKey(mathSymbols.Peek()))
                     {
-                        var currentOperator = token;
-                        var oldOperator = operators.Peek();
+                        var currentOperator = Operator.Operators[token];
+                        var oldOperator = Operator.Operators[mathSymbols.Peek()];
 
-                        if (currentOperator > oldOperator)
+                        if ((currentOperator.Associativity == Associativity.LEFT && currentOperator.Precedence <= oldOperator.Precedence) || 
+                            (currentOperator.Associativity == Associativity.RIGHT && currentOperator.Precedence < oldOperator.Precedence))
                         {
-                            rpn.Enqueue(operators.Pop());
+                            rpn.Enqueue(mathSymbols.Pop());
                         }
                     }
-                    operators.Push(token.ToString());
+                    mathSymbols.Push(token);
                 }
                 else if (token.Equals("("))
                 {
-                    operators.Push(token.ToString());
+                    mathSymbols.Push(token);
                 }
                 else if (token.Equals(")"))
                 {
-                    while (operators.Count != 0 && !operators.Peek().Equals("("))
+                    while (mathSymbols.Count != 0 && !mathSymbols.Peek().Equals("("))
                     {
                         // Until the top token (from the stack) is left parenthesis, pop from the stack to the output buffer
-                        rpn.Enqueue(operators.Pop());
+                        rpn.Enqueue(mathSymbols.Pop());
                     }
                     // remove left parentheses
-                    operators.Pop();
+                    mathSymbols.Pop();
                 }
             }
+            // enqueue last operand into rpn
+            rpn.Enqueue(operand);
 
-            while (operators.Count != 0)
+            while (mathSymbols.Count != 0)
             {
-                rpn.Enqueue(operators.Pop());
+                rpn.Enqueue(mathSymbols.Pop());
             }
 
             return rpn;
-        }
-
-        private static bool IsOperator(string token)
-        {
-            return token == "+" || token == "-" || token == "*" || token == "/" || token == "%";
-        }
-
-        private static int Precedence(string leftOp, string rightOp)
-        {
-            return 0;
         }
     }
 }

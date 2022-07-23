@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CalculatorParser
+﻿namespace CalculatorParser
 {
-    internal class Calculator
+    public class Calculator
     {
         private string _expression;
 
@@ -15,16 +9,16 @@ namespace CalculatorParser
             _expression = expression;
         }
 
-
         public string Solve()
         {
             // resolve edge cases first
             if (_expression.Contains('.'))
             {
-                return "error";
+                return string.Format("{0} error", _expression);
             }
 
-            return "";
+            ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator(_expression);
+            return string.Format("{0} {1}", _expression, expressionEvaluator.Evaluate());
         }
     }
 }
