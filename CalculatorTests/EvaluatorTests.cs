@@ -38,5 +38,17 @@
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void NegativeOperandEvaluateTest()
+        {
+            string input = "30+(-6)*10/2";
+            string expected = "0";
+
+            ExpressionEvaluator expressionParser = new ExpressionEvaluator(input);
+            string actual = expressionParser.Evaluate();
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

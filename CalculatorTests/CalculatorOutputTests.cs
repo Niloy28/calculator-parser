@@ -38,5 +38,17 @@
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void NeagtiveOperandsOutputTest()
+        {
+            string input = "1+2*-(4/2)";
+            string expected = "1+2*-(4/2) -3";
+
+            Calculator calculator = new Calculator(input);
+            string actual = calculator.Solve();
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

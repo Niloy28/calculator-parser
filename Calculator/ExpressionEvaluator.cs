@@ -11,8 +11,7 @@
 
         public string Evaluate()
         {
-            var rpnConverter = new ReversePolishNotationConverter();
-            var rpn = rpnConverter.Convert(_expression);
+            var rpn = ReversePolishNotationConverter.Convert(_expression);
 
             Stack<int> operands = new Stack<int>();
             foreach (var item in rpn)
